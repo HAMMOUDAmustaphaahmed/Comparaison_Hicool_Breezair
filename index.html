@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparaison Breezair vs Hicool - Climatisation Adiabatique</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-breezair: #0066cc;
+            --secondary-breezair: #00a8e8;
+            --primary-hicool: #00b894;
+            --secondary-hicool: #00cec9;
+            --dark: #2d3436;
+            --light: #f8f9fa;
+            --gradient-breezair: linear-gradient(135deg, #0066cc 0%, #00a8e8 100%);
+            --gradient-hicool: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.3;
+            animation: move 20s linear infinite;
+        }
+
+        @keyframes move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .brand-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+        }
+
+        .brand-card.breezair::before {
+            background: var(--gradient-breezair);
+        }
+
+        .brand-card.hicool::before {
+            background: var(--gradient-hicool);
+        }
+
+        .brand-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .brand-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            font-weight: bold;
+            color: white;
+            margin-right: 20px;
+        }
+
+        .breezair .brand-logo {
+            background: var(--gradient-breezair);
+        }
+
+        .hicool .brand-logo {
+            background: var(--gradient-hicool);
+        }
+
+        .brand-title h2 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .brand-tagline {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .specs-list {
+            list-style: none;
+        }
+
+        .specs-list li {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .specs-list li:hover {
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .spec-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .spec-value {
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        .breezair .spec-value.highlight {
+            color: var(--primary-breezair);
+        }
+
+        .hicool .spec-value.highlight {
+            color: var(--primary-hicool);
+        }
+
+        .price-tag {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(238, 90, 36, 0.3);
+        }
+
+        /* CHARTS SECTION - AGRANDIE */
+        .charts-section {
+            background: white;
+            padding: 60px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2em;
+            margin-bottom: 40px;
+            color: var(--dark);
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 5px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 3px;
+        }
+
+        /* GRILLE DE GRAPHIQUES AGRANDIE */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .chart-wrapper {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 450px; /* HAUTEUR AUGMENTÉE */
+            width: 100%;
+        }
+
+        .chart-title {
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        /* CONTENEUR RADAR AGRANDI */
+        .radar-wrapper {
+            max-width: 800px; /* LARGEUR AUGMENTÉE */
+            margin: 0 auto;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .radar-container {
+            position: relative;
+            height: 550px; /* HAUTEUR AUGMENTÉE */
+            width: 100%;
+        }
+
+        .features-comparison {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 1.05em;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 18px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .comparison-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .check {
+            color: #00b894;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .cross {
+            color: #d63031;
+            font-weight: bold;
+        }
+
+        .winner-badge {
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .breezair-winner {
+            background: rgba(0, 102, 204, 0.1);
+            color: var(--primary-breezair);
+        }
+
+        .hicool-winner {
+            background: rgba(0, 184, 148, 0.1);
+            color: var(--primary-hicool);
+        }
+
+        /* SECTION FINANCIÈRE AGRANDIE */
+        .financial-analysis {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 60px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+        }
+
+        .cost-calculator {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-top: 30px;
+        }
+
+        .methodology-box {
+            background: #e8f4f8;
+            border-left: 5px solid #0066cc;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .methodology-box h4 {
+            color: #0066cc;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .methodology-box ul {
+            margin-left: 20px;
+            line-height: 2;
+        }
+
+        .methodology-box li {
+            margin-bottom: 8px;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        .input-group input,
+        .input-group select {
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1.1em;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            border-radius: 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            margin: 30px auto;
+            font-weight: 600;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .result-card {
+            padding: 35px;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .result-breezair {
+            background: var(--gradient-breezair);
+        }
+
+        .result-hicool {
+            background: var(--gradient-hicool);
+        }
+
+        .result-value {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 15px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .savings-highlight {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 30px;
+            grid-column: 1 / -1;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .conclusion {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .verdict {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .verdict-card {
+            padding: 35px;
+            border-radius: 15px;
+            border: 3px solid;
+            text-align: left;
+        }
+
+        .verdict-breezair {
+            border-color: var(--primary-breezair);
+            background: rgba(0, 102, 204, 0.05);
+        }
+
+        .verdict-hicool {
+            border-color: var(--primary-hicool);
+            background: rgba(0, 184, 148, 0.05);
+        }
+
+        .verdict-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .verdict-breezair .verdict-title {
+            color: var(--primary-breezair);
+        }
+
+        .verdict-hicool .verdict-title {
+            color: var(--primary-hicool);
+        }
+
+        footer {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+            margin-top: 40px;
+            font-size: 0.95em;
+        }
+
+        .tech-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.75em;
+            font-weight: bold;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        .badge-premium {
+            background: #ffd700;
+            color: #333;
+        }
+
+        .badge-eco {
+            background: #00b894;
+            color: white;
+        }
+
+        .badge-best {
+            background: #e17055;
+            color: white;
+        }
+
+        @media (max-width: 1200px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            .calculator-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .comparison-grid,
+            .results,
+            .verdict,
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            .chart-container {
+                height: 350px;
+            }
+            .radar-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Comparaison Technique & Financière</h1>
+        <p class="subtitle">Climatisation Adiabatique Industrielle : Breezair vs Hicool</p>
+    </header>
+
+    <div class="container">
+        <!-- Fiches Techniques -->
+        <div class="comparison-grid">
+            <div class="brand-card breezair">
+                <div class="brand-header">
+                    <div class="brand-logo">B</div>
+                    <div class="brand-title">
+                        <h2>Breezair</h2>
+                        <p class="brand-tagline">Seeley International - Premium Australien</p>
+                    </div>
+                </div>
+                <ul class="specs-list">
+                    <li>
+                        <span class="spec-label">Débit d'air max</span>
+                        <span class="spec-value highlight">63 000 m³/h <span class="tech-badge badge-best">LEADER</span></span>
+                    </li>
+                    <li>
+                        <span class="spec-label">Modèles principaux</span>
+                        <span class="spec-value">TBS 580, TBSI 580, EXS 220</span>
+                    </li>
+                    <li>
+                        <span class="spec-label">Température sortie</span>
+                        <span class="spec-value">20-25°C (adiabatique direct)</span>
+                    </li>
+                    <li>
+                        <span class="spec-label">Technologie</span>
+                        <span class="spec-value">Chillcel® Mini-Cell pads <span class="tech-badge badge-premium">PATENTÉ</span></span>
+                    </li>
+                    <li>
+                        <span class="spec-label">Water Management</span>
+                        <span class="spec-value check">✓ Système intelligent intégré</span>
+                    </li>
+                    <li>
+                        <span class="spec-label">Contrôle</span>
+                        <span class="spec-value">MagIQtouch Wi-Fi</span>
+                    </li>
+                    <li>
+                        <span class="spec-label">Garantie structure</span>
+                        <span class="spec-value highlight">10 ans</span>
+                    </li>
+                    <li>
+                        <span class="spec-label">Garantie anti-corrosion</span>
+                        <span class="spec-value highlight">20 ans <span class="tech-badge badge-best">MAX</span></span>
+                    </li>
+                </ul>
+                <div class="price-tag">
+                    Prix installation : 5 000€ - 9 000€<br>
+                    <small>selon modèle et configuration</small>
+                </div>
+            </div>
+
+            <div class="brand-card hicool">
+                <div class="brand-header">
+                    <div class="brand-logo">H</div>
+                    <div class="brand-title">
+                        <h2>Hicool</h2>
+                        <p class="brand-tagline">Climatisation Industrielle Écologique</p>
+                    </div>
+                </div>
+                <ul class="specs-list">
+                    <li>
+                        <span class="spec-label">Débit d'air max</span>
+                        <span class="spec-value highlight">60 000 m³/h</span>
+                    </li>
+                    <li>
+                        <span class="spec-label">Modèles principaux</span>
+                        <span class="spec-value">16K, 22K, 28K, 40K m³/h</span>
+                    </li>
+                    <li>
+                        <span class="spec-label">Réduction température</span>
+                        <span class="spec-value">7-20°C <span class="tech-badge badge-eco">EFFICACE</span></span>
+                    </li>
+                    <li>
+                        <span class="spec-label">Technologie</span>
+                        <span class="spec-value">Filtres HI! Performance</span>
+                    </li>
+                    <li>
+                        <span class="spec-label">Système UV</span>
+                        <span class="spec-value check">✓ UV Clean Blue System</span>
+                    </li>
+                    <li>
+                        <span class="spec-label">Contrôle</span>
+                        <span class="spec-value">Modbus, écran énergie/CO2</span>
+                    </li>
+                    <li>
+                        <span class="spec-label">Garantie structure</span>
+                        <span class="spec-value highlight">10 ans</span>
+                    </li>
+                    <li>
+                        <span class="spec-label">Garantie pièces</span>
+                        <span class="spec-value">2 ans</span>
+                    </li>
+                </ul>
+                <div class="price-tag" style="background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);">
+                    Prix : ~1 500€ - 3 000€<br>
+                    <small>positionnement économique</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRAPHIQUES AGRANDIS -->
+        
+        <!-- Tableau Comparatif -->
+        <div class="features-comparison">
+            <h2 class="section-title">Comparaison Fonctionnelle Détaillée</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Caractéristique</th>
+                        <th>Breezair</th>
+                        <th>Hicool</th>
+                        <th>Avantage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Puissance de refroidissement</td>
+                        <td class="check">✓ Jusqu'à 214 kW (Climate Wizard)</td>
+                        <td class="check">✓ Jusqu'à 134 Mcal/h (~156 kW)</td>
+                        <td><span class="winner-badge hicool-winner">Hicool</span></td>
+                    </tr>
+                    <tr>
+                        <td>Efficacité énergétique</td>
+                        <td class="check">✓ -90% vs clim traditionnelle</td>
+                        <td class="check">✓ -80% vs clim traditionnelle</td>
+                        <td><span class="winner-badge breezair-winner">Breezair</span></td>
+                    </tr>
+                    <tr>
+                        <td>Humidité ajoutée</td>
+                        <td>Oui (système direct)</td>
+                        <td class="check">✓ Sans particules d'eau (IPx5)</td>
+                        <td><span class="winner-badge hicool-winner">Hicool</span></td>
+                    </tr>
+                    <tr>
+                        <td>Filtration air</td>
+                        <td>Standard</td>
+                        <td class="check">✓ G4 + UV 100% virus/bactéries</td>
+                        <td><span class="winner-badge hicool-winner">Hicool</span></td>
+                    </tr>
+                    <tr>
+                        <td>Connectivité</td>
+                        <td class="check">✓ Wi-Fi, application mobile</td>
+                        <td class="check">✓ Modbus, intégration BMS</td>
+                        <td>Égalité</td>
+                    </tr>
+                    <tr>
+                        <td>Maintenance prédictive</td>
+                        <td class="check">✓ Water Manager automatique</td>
+                        <td class="check">✓ Détecteur électrolytique eau</td>
+                        <td>Égalité</td>
+                    </tr>
+                    <tr>
+                        <td>Niveau sonore</td>
+                        <td class="check">✓ Très silencieux (inverter)</td>
+                        <td>Standard</td>
+                        <td><span class="winner-badge breezair-winner">Breezair</span></td>
+                    </tr>
+                    <tr>
+                        <td>Prix d'entrée</td>
+                        <td>5 000€ - 9 000€</td>
+                        <td class="check">✓ ~1 500€ - 3 000€</td>
+                        <td><span class="winner-badge hicool-winner">Hicool</span></td>
+                    </tr>
+                    <tr>
+                        <td>ROI rapide</td>
+                        <td>2-3 ans</td>
+                        <td class="check">✓ 1-2 ans</td>
+                        <td><span class="winner-badge hicool-winner">Hicool</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SECTION FINANCIÈRE AVEC MÉTHODOLOGIE -->
+        <div class="financial-analysis">
+            <h2 class="section-title">Calculateur de Rentabilité (TCO - Total Cost of Ownership)</h2>
+            
+            <div class="methodology-box">
+                <h4>📊 Méthodologie de Calcul du TCO</h4>
+                <ul>
+                    <li><strong>Investissement Initial :</strong> Prix moyen du matériel + installation (Breezair: 7 000€, Hicool: 2 500€)</li>
+                    <li><strong>Consommation Énergétique :</strong> Basée sur la surface × 2.5W/m² (Breezair) ou 3W/m² (Hicool) × heures d'usage × prix kWh</li>
+                    <li><strong>Maintenance :</strong> 3% de l'investissement/an pour Breezair (qualité premium), 5% pour Hicool (standard)</li>
+                    <li><strong>Durée d'analyse :</strong> 3 ans (période de retour sur investissement typique)</li>
+                    <li><strong>Sources :</strong> Données constructeurs, études Batiactu, benchmarks industriels</li>
+                </ul>
+            </div>
+            
+            <div class="cost-calculator">
+                <h3 style="text-align: center; margin-bottom: 25px; color: #555;">Paramètres de Votre Projet</h3>
+                
+                <div class="calculator-grid">
+                    <div class="input-group">
+                        <label>Surface à climatiser (m²)</label>
+                        <input type="number" id="surface" value="500" min="100" max="5000">
+                    </div>
+                    <div class="input-group">
+                        <label>Heures d'utilisation/jour</label>
+                        <input type="number" id="hours" value="8" min="1" max="24">
+                    </div>
+                    <div class="input-group">
+                        <label>Jours d'utilisation/an</label>
+                        <input type="number" id="days" value="120" min="30" max="365">
+                    </div>
+                    <div class="input-group">
+                        <label>Prix kWh (TND)</label>
+                        <input type="number" id="kwhPrice" value="0.18" step="0.01" min="0.10" max="0.30">
+                    </div>
+                </div>
+                
+                <button class="calculate-btn" onclick="calculateCosts()">🔄 Calculer les Économies</button>
+                
+                <div class="results" id="results">
+                    <div class="result-card result-breezair">
+                        <div style="font-size: 1.1em; margin-bottom: 10px;">Coût Total Breezair (3 ans)</div>
+                        <div class="result-value" id="breezairCost">--</div>
+                        <div style="font-size: 0.9em; opacity: 0.9;">Installation + Énergie + Maintenance</div>
+                    </div>
+                    <div class="result-card result-hicool">
+                        <div style="font-size: 1.1em; margin-bottom: 10px;">Coût Total Hicool (3 ans)</div>
+                        <div class="result-value" id="hicoolCost">--</div>
+                        <div style="font-size: 0.9em; opacity: 0.9;">Installation + Énergie + Maintenance</div>
+                    </div>
+                    <div class="savings-highlight" id="savingsBox" style="display: none;">
+                        <div style="font-size: 1.3em; margin-bottom: 10px;">💰 Économie Réalisée</div>
+                        <div class="result-value" id="savingsAmount">--</div>
+                        <div style="font-size: 1.1em;">Soit <span id="savingsPercent">--</span>% de différence</div>
+                        <div style="margin-top: 15px; font-size: 0.95em; opacity: 0.9;" id="winnerText"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conclusion -->
+        <div class="conclusion">
+            <h2 class="section-title">Verdict & Recommandations</h2>
+            
+            <div class="verdict">
+                                     
+                
+                <div class="verdict-card verdict-hicool">
+                    <div class="verdict-title">🌿 Choisissez Hicool si :</div>
+                    <ul style="line-height: 2.2; font-size: 1.05em;">
+                        <li>✓ Vous avez un budget limité (1.5K-3K€)</li>
+                        <li>✓ Vous voulez un ROI rapide (1-2 ans)</li>
+                        <li>✓ La filtration UV est prioritaire</li>
+                        <li>✓ Vous avez besoin de connectivité Modbus/BMS</li>
+                        <li>✓ Vous cherchez une solution économique efficace</li>
+                    </ul>
+                </div>
+            </div>
+            
+                    </div>
+
+        <footer>
+            <p style="font-size: 1.1em;">© 2026 - Comparaison basée sur données techniques publiques | Prix indicatifs, demandez un devis personnalisé</p>
+            <p style="margin-top: 15px;">
+                Sources : Seeley International, Hicool.fr, Bioclimas.com, Batiactu, Eurovent Certita Certification
+            </p>
+<p style="margin-top: 15px;">
+                AMH
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Configuration des couleurs
+        const breezairColor = 'rgba(0, 102, 204, 0.85)';
+        const breezairColorLight = 'rgba(0, 102, 204, 0.25)';
+        const breezairBorder = 'rgba(0, 102, 204, 1)';
+        const hicoolColor = 'rgba(0, 184, 148, 0.85)';
+        const hicoolColorLight = 'rgba(0, 184, 148, 0.25)';
+        const hicoolBorder = 'rgba(0, 184, 148, 1)';
+
+        // REMPLACER TOUT CE BLOC (lignes ~850-920)
+
+// Graphique 1 : Performance (Barres) - VERSION CORRIGÉE AVEC 2 AXES
+const ctx1 = document.getElementById('performanceChart').getContext('2d');
+new Chart(ctx1, {
+    type: 'bar',
+    data: {
+        labels: ['Débit Max (m³/h)', 'Puissance (kW)', 'Efficacité (COP)', 'Garantie (années)', 'Niveau Sonore (dB)'],
+        datasets: [{
+            label: 'Breezair',
+            data: [63000, 214, 19, 20, 65],
+            backgroundColor: breezairColor,
+            borderColor: breezairBorder,
+            borderWidth: 2,
+            borderRadius: 8,
+            yAxisID: 'y',  // Axe gauche pour débit
+        }, {
+            label: 'Hicool',
+            data: [40000, 156, 15, 10, 72],
+            backgroundColor: hicoolColor,
+            borderColor: hicoolBorder,
+            borderWidth: 2,
+            borderRadius: 8,
+            yAxisID: 'y',  // Axe gauche pour débit
+        },
+        // Dataset caché pour forcer l'échelle de l'axe droit
+        {
+            label: 'Échelle secondaire',
+            data: [null, null, null, null, null], // Valeurs nulles, juste pour l'axe
+            yAxisID: 'y1',
+            hidden: true // Caché dans la légende
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+            mode: 'index',
+            intersect: false,
+        },
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    font: { size: 14, weight: 'bold' },
+                    padding: 20,
+                    filter: function(item, chart) {
+                        // Cache le dataset "Échelle secondaire" de la légende
+                        return item.text !== 'Échelle secondaire';
+                    }
+                }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(0,0,0,0.8)',
+                titleFont: { size: 14 },
+                bodyFont: { size: 13 },
+                padding: 12,
+                cornerRadius: 8,
+                callbacks: {
+                    label: function(context) {
+                        let label = context.dataset.label || '';
+                        if (label) {
+                            label += ': ';
+                        }
+                        if (context.parsed.y !== null) {
+                            label += context.parsed.y;
+                            // Ajouter les unités selon l'index
+                            const index = context.dataIndex;
+                            const units = [' m³/h', ' kW', ' COP', ' ans', ' dB'];
+                            label += units[index];
+                        }
+                        return label;
+                    }
+                }
+            }
+        },
+        scales: {
+            y: {
+                type: 'linear',
+                display: true,
+                position: 'left',
+                title: {
+                    display: true,
+                    text: 'Débit (m³/h)',
+                    font: { size: 13, weight: 'bold' }
+                },
+                grid: {
+                    color: 'rgba(0,0,0,0.08)',
+                    drawBorder: false
+                },
+                ticks: {
+                    font: { size: 12 },
+                    padding: 10
+                }
+            },
+            y1: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                title: {
+                    display: true,
+                    text: 'Autres unités (kW, COP, années, dB)',
+                    font: { size: 13, weight: 'bold' }
+                },
+                grid: {
+                    drawOnChartArea: false, // N'affiche pas la grille pour cet axe
+                },
+                ticks: {
+                    font: { size: 12 },
+                    padding: 10
+                }
+            },
+            x: {
+                grid: { display: false },
+                ticks: {
+                    font: { size: 12, weight: '600' },
+                    padding: 10,
+                    maxRotation: 45,
+                    minRotation: 0
+                }
+            }
+        }
+    }
+});
+        // Graphique 2 : Coûts (Doughnut) - AGRANDI
+        const ctx2 = document.getElementById('costChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Investissement Initial', 'Énergie (5 ans)', 'Maintenance (5 ans)', 'Coût residual'],
+                datasets: [{
+                    data: [7000, 2500, 1500, 1000],
+                    backgroundColor: [
+                        breezairColor,
+                        breezairColorLight,
+                        'rgba(0, 102, 204, 0.5)',
+                        'rgba(0, 102, 204, 0.15)'
+                    ],
+                    borderColor: '#fff',
+                    borderWidth: 3,
+                    hoverOffset: 15
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { size: 13 },
+                            padding: 20,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += context.parsed + '€';
+                                return label;
+                            }
+                        },
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        padding: 12,
+                        cornerRadius: 8
+                    },
+                    title: {
+                        display: true,
+                        text: 'Breezair - TCO 5 ans: 12 000€',
+                        font: { size: 16, weight: 'bold' },
+                        padding: { top: 10, bottom: 20 }
+                    }
+                }
+            }
+        });
+
+        // Graphique 3 : Radar - AGRANDI
+        const ctx3 = document.getElementById('radarChart').getContext('2d');
+        new Chart(ctx3, {
+            type: 'radar',
+            data: {
+                labels: ['Performance', 'Efficacité Énergie', 'Silence', 'Durabilité', 'Prix', 'Fonctionnalités', 'Maintenance Facile'],
+                datasets: [{
+                    label: 'Breezair',
+                    data: [95, 95, 90, 95, 60, 85, 90],
+                    backgroundColor: breezairColorLight,
+                    borderColor: breezairBorder,
+                    pointBackgroundColor: breezairBorder,
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: breezairBorder,
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    borderWidth: 3
+                }, {
+                    label: 'Hicool',
+                    data: [75, 85, 70, 80, 95, 90, 75],
+                    backgroundColor: hicoolColorLight,
+                    borderColor: hicoolBorder,
+                    pointBackgroundColor: hicoolBorder,
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: hicoolBorder,
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: { size: 14, weight: 'bold' },
+                            padding: 20
+                        }
+                    }
+                },
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        min: 0,
+                        ticks: {
+                            stepSize: 20,
+                            font: { size: 11 },
+                            backdropColor: 'transparent'
+                        },
+                        pointLabels: {
+                            font: { size: 13, weight: '600' },
+                            color: '#444'
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.1)'
+                        },
+                        angleLines: {
+                            color: 'rgba(0,0,0,0.1)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Calculateur de coûts avec méthodologie explicite
+        function calculateCosts() {
+            const surface = parseInt(document.getElementById('surface').value);
+            const hours = parseInt(document.getElementById('hours').value);
+            const days = parseInt(document.getElementById('days').value);
+            const kwhPrice = parseFloat(document.getElementById('kwhPrice').value);
+
+            // MÉTHODOLOGIE DE CALCUL TCO
+            // 1. INVESTISSEMENT INITIAL (prix moyen constaté sur le marché)
+            const breezairInstall = 7000;  // € - Prix moyen installé (5 000-9 000€)
+            const hicoolInstall = 2500;    // € - Prix moyen installé (1 500-3 000€)
+
+            // 2. CONSOMMATION ÉNERGÉTIQUE ANNUELLE
+            // Hypothèse : Puissance installée proportionnelle à la surface
+            // Breezair : 2.5 W/m² (plus efficace, technologie inverter)
+            // Hicool : 3.0 W/m² (standard, légèrement moins optimisé)
+            const breezairPowerW = surface * 2.5;  // Watts
+            const hicoolPowerW = surface * 3.0;    // Watts
+
+            // Calcul énergie sur 3 ans en kWh
+            // Formule : (Puissance × Heures × Jours × Années) / 1000
+            const breezairKwh3ans = (breezairPowerW * hours * days * 3) / 1000;
+            const hicoolKwh3ans = (hicoolPowerW * hours * days * 3) / 1000;
+
+            // Coût énergie
+            const breezairEnergyCost = breezairKwh3ans * kwhPrice;
+            const hicoolEnergyCost = hicoolKwh3ans * kwhPrice;
+
+            // 3. MAINTENANCE PRÉVENTIVE ET CORRECTIVE
+            // Breezair : 3%/an (qualité premium, pièces plus durables, water manager auto)
+            // Hicool : 5%/an (standard, maintenance plus fréquente)
+            const breezairMaint3ans = breezairInstall * 0.03 * 3;
+            const hicoolMaint3ans = hicoolInstall * 0.05 * 3;
+
+            // 4. COÛT TOTAL DE POSSESSION (TCO)
+            const totalBreezair = breezairInstall + breezairEnergyCost + breezairMaint3ans;
+            const totalHicool = hicoolInstall + hicoolEnergyCost + hicoolMaint3ans;
+
+            // AFFICHAGE DES RÉSULTATS
+            document.getElementById('breezairCost').textContent = totalBreezair.toLocaleString('fr-FR', {
+                style: 'currency',
+                currency: 'EUR',
+                maximumFractionDigits: 0
+            });
+            
+            document.getElementById('hicoolCost').textContent = totalHicool.toLocaleString('fr-FR', {
+                style: 'currency',
+                currency: 'EUR',
+                maximumFractionDigits: 0
+            });
+
+            // CALCUL DES ÉCONOMIES
+            const savings = Math.abs(totalBreezair - totalHicool);
+            const percent = ((savings / Math.max(totalBreezair, totalHicool)) * 100).toFixed(1);
+            
+            const savingsBox = document.getElementById('savingsBox');
+            const savingsAmount = document.getElementById('savingsAmount');
+            const savingsPercent = document.getElementById('savingsPercent');
+            const winnerText = document.getElementById('winnerText');
+
+            savingsBox.style.display = 'block';
+            savingsAmount.textContent = savings.toLocaleString('fr-FR', {
+                style: 'currency',
+                currency: 'EUR',
+                maximumFractionDigits: 0
+            });
+            savingsPercent.textContent = percent;
+
+            if (totalHicool < totalBreezair) {
+                savingsBox.style.background = 'linear-gradient(135deg, #00b894 0%, #00cec9 100%)';
+                winnerText.textContent = `✅ Hicool est plus économique de ${percent}% sur 3 ans`;
+            } else {
+                savingsBox.style.background = 'linear-gradient(135deg, #0066cc 0%, #00a8e8 100%)';
+                winnerText.textContent = `✅ Breezair est plus économique de ${percent}% sur 3 ans (grâce à sa durabilité)`;
+            }
+        }
+
+        // Calcul initial au chargement
+        calculateCosts();
+    </script>
+</body>
+</html>
